@@ -102,8 +102,7 @@ export default function HangmanPuzzle({ difficulty, date, onSolved, onFailed, sh
   const [falling, setFalling] = useState(false);
   const [status, setStatus] = useState<'playing' | 'won' | 'lost'>('playing');
 
-  const wrongGuesses = [...guessed].filter(l => !word.includes(l));
-  const wrongCount = wrongGuesses.length;
+  const wrongGuesses = Array.from(guessed).filter(l => !word.includes(l));  const wrongCount = wrongGuesses.length;
   const isWordComplete = word.split('').every(l => guessed.has(l));
 
   useEffect(() => {
