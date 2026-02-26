@@ -1,226 +1,287 @@
-# 🧩 DailyPuzzle — Capstone Project
+# 🧩 DailyPuzzle — Think Sharp Every Day
 
-A **daily logic puzzle game** with GitHub-style activity heatmap, streak tracking, offline support, and minimal backend sync.
+<div align="center">
+
+![DailyPuzzle Banner](https://img.shields.io/badge/DailyPuzzle-Think%20Sharp-6c63ff?style=for-the-badge&logo=puzzle-piece)
+![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?style=for-the-badge&logo=tailwind-css)
+![Prisma](https://img.shields.io/badge/Prisma-5-2D3748?style=for-the-badge&logo=prisma)
+
+**A production-ready daily puzzle game with 4 unique games, streak tracking, GitHub-style activity heatmap, offline-first architecture, and Google authentication.**
+
+[Live Demo](#) · [Report Bug](#) · [Request Feature](#)
+
+</div>
 
 ---
 
-## 🏗 Architecture Overview
+## 📸 Preview
+
+> Solve 4 daily puzzles, build your streak, and watch your activity heatmap grow!
+
+---
+
+## ✨ Features
+
+- 🎯 **4 Daily Puzzles** — Number Sequence → Math Challenge → Hangman → Wordle
+- 🔥 **Streak Tracking** — Current streak, best streak, total days played
+- 📊 **GitHub-style Heatmap** — 365-day activity visualization
+- 🔐 **Google OAuth + Guest Mode** — Sign in with Google or play as Guest
+- 💾 **Offline-First** — Works without internet using IndexedDB
+- 🔄 **Auto Backend Sync** — Syncs to PostgreSQL when online
+- 🏆 **Achievements** — Unlock badges for milestones
+- 🪢 **Hangman** — Animated rope cuts, man falls on game over
+- 🟩 **Wordle** — Flip tile animations, color-coded keyboard
+- 📱 **Mobile Responsive** — Works on all screen sizes
+- ⚡ **Deterministic Puzzles** — Same puzzle for all users each day
+
+---
+
+## 🎮 How It Works
 
 ```
-Client-First Architecture
-├── IndexedDB (Primary data store — offline-first)
-├── Next.js App Router (React frontend + API routes)
-├── Framer Motion (Animations)
-├── Tailwind CSS (Styling)
-└── Backend Sync API (POST /api/sync/daily-scores)
+Every day you get 4 puzzles in order:
+
+Puzzle 1 → 🔢 Number Sequence   (find the next number)
+Puzzle 2 → ➗ Math Challenge     (solve the equation)
+Puzzle 3 → 🪢 Hangman           (guess the word, save the man)
+Puzzle 4 → 🟩 Wordle            (guess 5-letter word in 6 tries)
+
+All 4 puzzles count toward your daily streak!
 ```
+
+---
+
+## 🛠 Tech Stack
+
+| Category | Technology |
+|----------|-----------|
+| Frontend | Next.js 14, React 18, TypeScript |
+| Styling | Tailwind CSS, Framer Motion |
+| Auth | NextAuth.js (Google + Guest) |
+| Database | PostgreSQL (Neon) via Prisma ORM |
+| Offline Storage | IndexedDB (idb library) |
+| Deployment | Vercel |
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Install Dependencies
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Git
+
+### Installation
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/YOUR_USERNAME/daily-puzzle-game.git
+cd daily-puzzle-game
+```
+
+**2. Install dependencies**
 ```bash
 npm install
 ```
 
-### 2. Run Development Server
+**3. Set up environment variables**
+```bash
+cp .env.example .env.local
+```
+
+Fill in your `.env.local`:
+```env
+DATABASE_URL="postgresql://..."
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
+
+**4. Set up database**
+```bash
+npm run db:push
+```
+
+**5. Run development server**
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000) 🎉
 
-### 3. Build for Production
+---
+
+## 🔐 Environment Setup Guides
+
+### A) Free Database — Neon PostgreSQL
+1. Go to [neon.tech](https://neon.tech) → Sign up free
+2. Create new project → name it `daily-puzzle`
+3. Copy the **Connection String**
+4. Paste as `DATABASE_URL` in `.env.local`
+
+### B) Google OAuth
+1. Go to [console.cloud.google.com](https://console.cloud.google.com)
+2. Create new project → **APIs & Services** → **Credentials**
+3. Create **OAuth 2.0 Client ID** → Web application
+4. Add redirect URIs:
+   - `http://localhost:3000/api/auth/callback/google`
+   - `https://your-app.vercel.app/api/auth/callback/google`
+5. Copy **Client ID** + **Secret** → paste in `.env.local`
+
+### C) NextAuth Secret
+Generate one instantly:
 ```bash
-npm run build
-npm start
+openssl rand -base64 32
 ```
 
 ---
 
-## 📦 Project Structure
+## 🌐 Deploy to Vercel
+
+```bash
+# Push to GitHub first
+git add .
+git commit -m "Deploy DailyPuzzle"
+git push origin main
+```
+
+Then:
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Import your GitHub repo
+3. Add all environment variables
+4. Click **Deploy** ✅
+
+Your app will be live at `https://your-app.vercel.app`
+
+---
+
+## 📁 Project Structure
 
 ```
 src/
 ├── app/
-│   ├── page.tsx              # Main game UI
-│   ├── layout.tsx            # Root layout
-│   ├── globals.css           # Global styles
+│   ├── page.tsx                         # Main game UI
+│   ├── layout.tsx                       # Root layout
+│   ├── globals.css                      # Global styles
+│   ├── auth/signin/page.tsx             # Sign in page
 │   └── api/
-│       └── sync/
-│           └── daily-scores/ # Backend sync endpoint
-│               └── route.ts
+│       ├── auth/[...nextauth]/route.ts  # NextAuth handler
+│       └── sync/daily-scores/route.ts  # Backend sync API
 ├── components/
+│   ├── AuthProvider.tsx                 # Session provider
+│   ├── UserMenu.tsx                     # User avatar + logout
 │   ├── puzzle/
-│   │   ├── SequencePuzzle.tsx   # Number sequence puzzle
-│   │   ├── MathPuzzle.tsx       # Math expression puzzle
-│   │   └── CompletionScreen.tsx # Post-completion view
-│   ├── heatmap/
-│   │   └── Heatmap.tsx          # GitHub-style activity grid
-│   └── streak/
-│       └── StreakDisplay.tsx    # Streak stats UI
+│   │   ├── SequencePuzzle.tsx           # Number sequence game
+│   │   ├── MathPuzzle.tsx               # Math challenge game
+│   │   ├── HangmanPuzzle.tsx            # Hangman game
+│   │   ├── WordlePuzzle.tsx             # Wordle game
+│   │   └── CompletionScreen.tsx         # End screen
+│   ├── heatmap/Heatmap.tsx              # Activity heatmap
+│   └── streak/StreakDisplay.tsx         # Streak stats
 ├── hooks/
-│   └── useGameState.ts          # Central game state hook
+│   └── useGameState.ts                  # Central game state
 └── lib/
-    ├── db.ts                    # IndexedDB operations (idb)
-    ├── puzzleEngine.ts          # Deterministic puzzle generation
-    ├── streak.ts                # Streak calculation logic
-    ├── heatmap.ts               # Heatmap data processing
-    └── sync.ts                  # Backend sync utilities
+    ├── prisma.ts                        # Prisma client
+    ├── db.ts                            # IndexedDB (offline)
+    ├── puzzleEngine.ts                  # Deterministic puzzles
+    ├── streak.ts                        # Streak calculation
+    ├── heatmap.ts                       # Heatmap data processing
+    └── sync.ts                          # Backend sync utilities
+prisma/
+└── schema.prisma                        # Database schema
 ```
 
 ---
 
-## 🎮 Modules
+## 🏗 Architecture
 
-### MODULE 1 — Puzzle Engine
-- **Deterministic seed**: Same date → same puzzle for all users
-- **2 puzzle types**: Number Sequence + Math Expression
-- **Client-side validation**: No server round-trips
-- **Timer tracking**: Starts on first interaction
-- **Hint system**: 3 hints/day with score penalty
-- **Auto-save progress**: Stored in IndexedDB
-
-### MODULE 2 — Daily Unlock & Streak
-- Only today's puzzle is playable
-- Streak resets if a day is missed
-- Local midnight timezone handling
-- Streak data: Current, Longest, Total Days
-
-### MODULE 3 — Heatmap (365 days)
-- GitHub-style 7-row grid
-- 5 intensity levels (0–4)
-- Hover tooltips with stats
-- Today highlighted with ring
-- Leap year safe (366 days)
-- Animated cell reveals
-
-### MODULE 4 — Backend Sync
-- `POST /api/sync/daily-scores`
-- Server-side validation (date, score bounds, time bounds)
-- Upsert logic (no duplicates)
-- Auto-sync on internet reconnect
-- Demo uses in-memory store (replace with Prisma + PostgreSQL)
-
-### MODULE 5 — Offline First
-- **IndexedDB** for all local storage
-  - `dailyActivity` — solved state, score, time
-  - `puzzleProgress` — in-progress saves
-  - `achievements` — unlocked badges
-- Sync flag: marks records as synced/unsynced
-- Works 100% without internet
-
-### MODULE 6 — UI Polish
-- Dark theme with purple accent
-- Smooth Framer Motion animations
-- Completion animation with trophy
-- Achievement toast notifications
-- Streak fire indicator
-- Mobile responsive layout
-- Space Mono + Sora fonts
-
----
-
-## 🔌 Connecting Real Database (Production)
-
-Replace the in-memory store in `src/app/api/sync/daily-scores/route.ts`:
-
-```bash
-npm install prisma @prisma/client
-npx prisma init
 ```
-
-Prisma schema:
-```prisma
-model DailyScore {
-  id        String   @id @default(uuid())
-  userId    String
-  date      DateTime @db.Date
-  score     Int
-  timeTaken Int
-  difficulty Int
-  createdAt DateTime @default(now())
-
-  @@unique([userId, date])
-}
+User visits app
+      ↓
+Sign In (Google OAuth / Guest)
+      ↓
+IndexedDB ← Primary storage (instant, offline)
+      ↓
+Puzzle solved → Save to IndexedDB immediately
+      ↓
+If online + logged in → POST /api/sync/daily-scores
+      ↓
+Prisma upsert → Neon PostgreSQL (cloud backup)
 ```
-
-Then use:
-```typescript
-await prisma.dailyScore.upsert({
-  where: { userId_date: { userId, date } },
-  create: { userId, date, score, timeTaken, difficulty },
-  update: { score, timeTaken, difficulty },
-});
-```
-
----
-
-## 🏆 Intensity Levels
-
-| Level | Condition         | Color        |
-|-------|-------------------|--------------|
-| 0     | Not played        | Dark gray    |
-| 1     | Solved Easy       | Light green  |
-| 2     | Solved Medium     | Medium green |
-| 3     | Solved Hard       | Bright green |
-| 4     | Perfect score     | Glowing green|
 
 ---
 
 ## 🎯 Score Formula
 
 ```
-score = (difficulty × 100) + max(0, 300 - timeTaken) - (hintsUsed × 50)
+Base Score  = (difficulty × 100) + max(0, 300 - timeTaken) - (hintsUsed × 50)
+Final Score = Base Score × multiplier
+
+Multipliers:
+  All puzzles solved    → ×1.0  (100%)
+  Wordle failed         → ×0.7  (70%)
 ```
 
 ---
 
-## 🔐 Security
+## 🏆 Achievements
 
-- All sync requests validated server-side
-- Future dates rejected
-- Score out-of-bounds rejected  
-- Unrealistic completion times (<5s or >1hr) rejected
-
----
-
-## 🧪 Key Test Cases
-
-| Case | Result |
-|------|--------|
-| Same date = same puzzle | ✅ Deterministic seed |
-| Wrong sequence answer | ✅ Shake animation, no advance |
-| Reload during game | ✅ Progress restored from IndexedDB |
-| Offline play | ✅ Full functionality |
-| Online reconnect | ✅ Auto-sync triggers |
-| Leap year | ✅ 366 days generated |
-| Missed day | ✅ Streak resets to 0 |
+| Badge | Name | Requirement |
+|-------|------|-------------|
+| 🔥 | On Fire | 7 day streak |
+| ⚡ | Lightning | Complete in under 60 seconds |
+| 🌟 | Star Player | 30 day streak |
+| 💎 | Diamond | 100 day streak |
+| 🎯 | Perfect | Score 400+ points |
 
 ---
 
-## 📈 Scalability
-
-- **0 read requests/day** from heatmap (all client-side)
-- **1 write/day** per active user for sync
-- At 1M DAU: only 1M writes/day
-- Serverless-ready (Vercel + Neon PostgreSQL)
-
----
-
-## 🚀 Deployment (Vercel)
+## 📜 Scripts
 
 ```bash
-npm i -g vercel
-vercel
-```
-
-Set environment variable:
-```
-PUZZLE_SECRET_KEY=your_secret_key_here
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run db:push      # Push schema to database
+npm run db:generate  # Generate Prisma client
 ```
 
 ---
 
-Built for **Bluestock Fintech Capstone Project** · Feb 2026
+## 🤝 Contributing
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+Distributed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**Sahil More**
+- GitHub: [@Sahilmore469](https://github.com/Sahilmore469)
+
+---
+
+## 🙏 Acknowledgments
+
+- Inspired by [Wordle](https://www.nytimes.com/games/wordle/index.html)
+- Built for **Bluestock Fintech Capstone Project** — February 2026
+- Powered by [Next.js](https://nextjs.org), [Prisma](https://prisma.io), [Neon](https://neon.tech)
+
+---
+
+<div align="center">
+  Made with ❤️ by Sahil More
+</div>
